@@ -1,0 +1,13 @@
+import { Message } from "@/hooks/chat";
+
+const API_URL = "http://127.0.0.1:8000";
+
+export const getMessages = async (): Promise<Message[]> =>
+  await fetch(`${API_URL}/`, {
+    method: "GET",
+  }).then((res) => res.json());
+
+export const sendMessage = async (text: string): Promise<Message[]> =>
+  await fetch(`${API_URL}/?text=${text}`, {
+    method: "POST",
+  }).then((res) => res.json());

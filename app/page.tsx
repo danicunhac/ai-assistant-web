@@ -1,6 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { LoaderIcon, XIcon } from "lucide-react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,36 +15,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { XIcon } from "lucide-react";
-import AvaPic from "@/images/ava.png";
-import { useEffect, useRef } from "react";
 import { Separator } from "@/components/ui/separator";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
 
-type Message = {
-  id: string;
-  text: string;
-  sender: "user" | "system";
-};
+import { useChatStore } from "@/hooks/chat";
 
-type Chat = {
-  messages: Message[];
-};
-
-const initialChat: Chat = {
-  messages: [
-    {
-      id: "1",
-      text: "Hello! I'm Ava, and I'm here to help you. May I have your name, please?",
-      sender: "system",
-    },
-    {
-      id: "2",
-      text: "Hi Ava, my name is Daniel",
-      sender: "user",
-    },
-  ],
-};
+import AvaPic from "@/images/ava.png";
 
 const UserMessage = ({ text }: { text: string }) => (
   <div className="flex gap-2 justify-end max-w-1/2">
@@ -67,12 +46,24 @@ const SystemMessage = ({ text }: { text: string }) => (
 
 export default function Home() {
   const chatRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [messages, loading, get, send] = useChatStore((state) => [
+    state.messages,
+    state.loading,
+    state.get,
+    state.send,
+  ]);
+
+  useEffect(() => {
+    get();
+  }, [get]);
 
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -85,7 +76,6 @@ export default function Home() {
       <footer className="row-start-3 w-full flex gap-6 flex-wrap items-center justify-end">
         <AlertDialog>
           <AlertDialogTrigger>
-            {/* add drop shadow */}
             <div className="flex items-center gap-2 bg-purple-500 p-4 rounded-full hover:underline-offset-4 ease-in-out duration-200 shadow-lg hover:bg-purple-600 cursor-pointer">
               <Image
                 src="https://nextjs.org/icons/vercel.svg"
@@ -95,7 +85,7 @@ export default function Home() {
               />
             </div>
           </AlertDialogTrigger>
-          <AlertDialogContent className="bg-white h-[80%] md:w-full">
+          <AlertDialogContent className="bg-white h-[95%] md:w-full">
             <AlertDialogHeader className="flex w-full justify-center space-">
               <AlertDialogCancel className="rounded-full w-6 h-6 p-1 self-end">
                 <XIcon size={16} />
@@ -116,9 +106,9 @@ export default function Home() {
             </AlertDialogHeader>
             <div
               ref={chatRef}
-              className="flex flex-col gap-4 p-4 overflow-y-scroll h-80"
+              className="flex flex-col gap-4 p-4 overflow-y-scroll h-100"
             >
-              {initialChat.messages.map((message) => (
+              {messages.map((message) => (
                 <div key={message.id}>
                   {message.sender === "user" ? (
                     <UserMessage text={message.text} />
@@ -131,12 +121,28 @@ export default function Home() {
             <Separator />
             <AlertDialogFooter className="flex flex-row items-center rounded py-1 px-3">
               <input
+                ref={inputRef}
                 type="text"
                 placeholder="Type here..."
-                className="w-full p-2 rounded-lg text-white dark:text-black"
+                className="w-full py-2 px-3 rounded-lg text-gray-600 font-normal focus:outline-none"
               />
-              <AlertDialogAction className="bg-transparent border-none shadow-none hover:bg-transparent group">
-                <PaperPlaneIcon className="w-6 h-6 text-gray-400 group-hover:text-gray-800 ease-linear duration-100" />
+              <AlertDialogAction
+                type="submit"
+                className="bg-transparent border-none shadow-none hover:bg-transparent group"
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  if (inputRef.current) {
+                    send(inputRef.current.value ?? "");
+                    inputRef.current.value = "";
+                  }
+                }}
+              >
+                {!loading ? (
+                  <PaperPlaneIcon className="w-6 h-6 text-gray-400 group-hover:text-gray-800 ease-linear duration-100" />
+                ) : (
+                  <LoaderIcon className="w-6 h-6 text-gray-400 animate-spin" />
+                )}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
