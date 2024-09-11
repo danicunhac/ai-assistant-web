@@ -15,9 +15,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Tanjiro App",
+  title: "Ava - AI Assistant App",
   description:
-    "An AI assistant for your daily needs. Tanjiro is specially designed to help you with device problems.",
+    "An AI assistant for your daily needs. Ava is specially designed to help you with any problem.",
 };
 
 export default function RootLayout({

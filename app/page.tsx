@@ -31,7 +31,7 @@ const initialChat: Chat = {
   messages: [
     {
       id: "1",
-      text: "Hello! I'm Ava, and I'm here to help you. May I have your name, please? Hello! I'm Ava, and I'm here to help you. May I have your name, please?Hello! I'm Ava, and I'm here to help you. May I have your name, please?Hello! I'm Ava, and I'm here to help you. May I have your name, please?Hello! I'm Ava, and I'm here to help you. May I have your name, please?",
+      text: "Hello! I'm Ava, and I'm here to help you. May I have your name, please?",
       sender: "system",
     },
     {
@@ -43,7 +43,7 @@ const initialChat: Chat = {
 };
 
 const UserMessage = ({ text }: { text: string }) => (
-  <div className="flex gap-2 justify-end">
+  <div className="flex gap-2 justify-end max-w-1/2">
     <div className="py-1 px-3 rounded-lg rounded-tr-none text-white bg-purple-500 items-center">
       <p>{text}</p>
     </div>
@@ -78,15 +78,15 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-            Meet Tanjiro, your personal AI device assistant.
-          </code>
+          Click on the bottom right to chat with{" "}
+          <strong className="text-purple-500">Ava</strong>
         </div>
       </main>
       <footer className="row-start-3 w-full flex gap-6 flex-wrap items-center justify-end">
         <AlertDialog>
           <AlertDialogTrigger>
-            <div className="flex items-center gap-2 bg-purple-500 p-4 rounded-full hover:underline-offset-4">
+            {/* add drop shadow */}
+            <div className="flex items-center gap-2 bg-purple-500 p-4 rounded-full hover:underline-offset-4 ease-in-out duration-200 shadow-lg hover:bg-purple-600 cursor-pointer">
               <Image
                 src="https://nextjs.org/icons/vercel.svg"
                 alt="Open AI Assistant"
@@ -103,7 +103,7 @@ export default function Home() {
               <AlertDialogTitle className="flex flex-col items-center text-sm gap-2">
                 <Image
                   src={AvaPic}
-                  alt="Tanjiro Picture"
+                  alt="Ava Picture"
                   width={64}
                   height={64}
                   className="self-center rounded bg-purple-500 p-1 rounded-full"
