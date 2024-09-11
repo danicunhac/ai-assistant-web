@@ -49,12 +49,9 @@ export const useChatStore = create<Chat & ChatActions>()(
 
         set({ loading: true });
 
-        await deleteMessage(id);
+        const messages = await deleteMessage(id);
 
-        set((state) => ({
-          loading: false,
-          messages: state.messages.filter((message) => message.id !== id),
-        }));
+        set({ messages, loading: false });
       },
       //   update: async (id?: string, text?: string) => {},
     }),
