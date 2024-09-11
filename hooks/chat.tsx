@@ -1,4 +1,4 @@
-import { getMessages, sendMessage } from "@/api/chat";
+import { deleteMessage, getMessages, sendMessage } from "@/api/chat";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -16,7 +16,7 @@ export type Chat = {
 type ChatActions = {
   get: () => Promise<void>;
   send: (text: string) => Promise<void>;
-  //   delete: (id: string) => Promise<void>;
+  delete: (id: string) => Promise<void>;
   //   update: (id: string, text: string) => Promise<void>;
 };
 
@@ -44,7 +44,18 @@ export const useChatStore = create<Chat & ChatActions>()(
           messages: [...state.messages, ...messages],
         }));
       },
-      //   delete: async (id?: string) => {},
+      delete: async (id?: string) => {
+        if (!id) return;
+
+        set({ loading: true });
+
+        await deleteMessage(id);
+
+        set((state) => ({
+          loading: false,
+          messages: state.messages.filter((message) => message.id !== id),
+        }));
+      },
       //   update: async (id?: string, text?: string) => {},
     }),
     {

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { PaperPlaneIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { LoaderIcon, XIcon } from "lucide-react";
 
 import {
@@ -20,13 +20,44 @@ import { Separator } from "@/components/ui/separator";
 import { useChatStore } from "@/hooks/chat";
 
 import AvaPic from "@/images/ava.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const UserMessage = ({ text }: { text: string }) => (
-  <div className="flex gap-2 justify-end max-w-1/2">
-    <div className="py-1 px-3 rounded-lg rounded-tr-none text-white bg-purple-500 items-center">
-      <p>{text}</p>
-    </div>
-  </div>
+const UserMessage = ({
+  text,
+  onDelete,
+}: {
+  text: string;
+  onDelete: () => void;
+}) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger className="flex gap-2 justify-end max-w-1/2">
+      <div className="py-1 px-3 rounded-lg rounded-tr-none text-white bg-purple-500 items-center">
+        <p>{text}</p>
+      </div>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuItem className="cursor-pointer">
+        <span>Update</span>
+        <DropdownMenuShortcut>
+          <Pencil1Icon />
+        </DropdownMenuShortcut>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem onClick={onDelete} className="cursor-pointer">
+        <span>Delete</span>
+        <DropdownMenuShortcut>
+          <TrashIcon />
+        </DropdownMenuShortcut>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 );
 
 const SystemMessage = ({ text }: { text: string }) => (
@@ -48,11 +79,12 @@ export default function Home() {
   const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [messages, loading, get, send] = useChatStore((state) => [
+  const [messages, loading, get, send, del] = useChatStore((state) => [
     state.messages,
     state.loading,
     state.get,
     state.send,
+    state.delete,
   ]);
 
   useEffect(() => {
@@ -63,7 +95,7 @@ export default function Home() {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, chatRef]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -76,7 +108,7 @@ export default function Home() {
       <footer className="row-start-3 w-full flex gap-6 flex-wrap items-center justify-end">
         <AlertDialog>
           <AlertDialogTrigger>
-            <div className="flex items-center gap-2 bg-purple-500 p-4 rounded-full hover:underline-offset-4 ease-in-out duration-200 shadow-lg hover:bg-purple-600 cursor-pointer">
+            <div className="flex items-center gap-2 bg-purple-500 p-4 rounded-full focus:outline-none hover:underline-offset-4 ease-in-out duration-200 shadow-lg hover:bg-purple-600 cursor-pointer">
               <Image
                 src="https://nextjs.org/icons/vercel.svg"
                 alt="Open AI Assistant"
@@ -85,9 +117,9 @@ export default function Home() {
               />
             </div>
           </AlertDialogTrigger>
-          <AlertDialogContent className="bg-white h-[95%] md:w-full">
-            <AlertDialogHeader className="flex w-full justify-center space-">
-              <AlertDialogCancel className="rounded-full w-6 h-6 p-1 self-end">
+          <AlertDialogContent className="bg-white h-[95%]">
+            <AlertDialogHeader className="flex w-full justify-center">
+              <AlertDialogCancel className=" w-6 h-6 p-1 self-end text-gray-600 border-none shadow-none">
                 <XIcon size={16} />
               </AlertDialogCancel>
               <AlertDialogTitle className="flex flex-col items-center text-sm gap-2">
@@ -106,20 +138,23 @@ export default function Home() {
             </AlertDialogHeader>
             <div
               ref={chatRef}
-              className="flex flex-col gap-4 p-4 overflow-y-scroll h-100"
+              className="flex flex-col gap-4 p-4 overflow-y-auto h-full"
             >
               {messages.map((message) => (
-                <div key={message.id}>
+                <DropdownMenu key={message.id}>
                   {message.sender === "user" ? (
-                    <UserMessage text={message.text} />
+                    <UserMessage
+                      text={message.text}
+                      onDelete={() => del(message.id)}
+                    />
                   ) : (
                     <SystemMessage text={message.text} />
                   )}
-                </div>
+                </DropdownMenu>
               ))}
             </div>
             <Separator />
-            <AlertDialogFooter className="flex flex-row items-center rounded py-1 px-3">
+            <AlertDialogFooter className="flex flex-col items-center h-center">
               <input
                 ref={inputRef}
                 type="text"

@@ -11,3 +11,8 @@ export const sendMessage = async (text: string): Promise<Message[]> =>
   await fetch(`${API_URL}/?text=${text}`, {
     method: "POST",
   }).then((res) => res.json());
+
+export const deleteMessage = async (id: string): Promise<Message[]> =>
+  await fetch(`${API_URL}/?id=${id}`, {
+    method: "DELETE",
+  }).then((res) => res.json());
