@@ -6,6 +6,7 @@ export type Message = {
   id: string;
   text: string;
   sender: "user" | "system";
+  edited?: boolean;
 };
 
 export type Chat = {

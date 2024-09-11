@@ -115,6 +115,7 @@ export const Content = ({
             {message.sender === "user" ? (
               <UserMessage
                 text={message.text}
+                edited={message.edited}
                 onDelete={() => deleteMessage(message.id)}
               />
             ) : (
