@@ -86,7 +86,7 @@ export const Content = ({ closePopover }: ContentProps) => {
       <header className="flex flex-col w-full">
         <button
           onClick={closePopover}
-          className="w-6 h-6 p-1 self-end text-gray-600 border-none shadow-none"
+          className="w-6 h-6 p-1 self-end text-gray-600 border-none shadow-none hover:bg-gray-100 hover:text-gray-800 focus:outline-none transition ease-in-out duration-200 rounded-full"
         >
           <XIcon size={16} />
         </button>
