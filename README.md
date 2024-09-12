@@ -2,11 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, create a `.env` file from `.env.example` and add your `OPENAI_API_KEY`:
+First, you should create a `.env` file from `.env.example` and add your `NEXT_PUBLIC_API_KEY`:
 
 ```
 $ cp .env.example .env
 ```
+
+### Note: as of now, the API key is hardcoded in @/api/chat.ts, where you should change the url
 
 Secondly, run the development server:
 
