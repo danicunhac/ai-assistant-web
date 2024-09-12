@@ -6,7 +6,7 @@ import { DropdownMenu } from "@/components/ui/dropdown-menu";
 
 import AvaPic from "@/images/ava.png";
 import { useEffect, useRef } from "react";
-import { Message } from "@/hooks/chat";
+import { useChatStore } from "@/hooks/chat";
 
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { UserMessage } from "./UserMessage";
@@ -45,22 +45,16 @@ const SystemMessage = ({ text }: { text: string }) => (
 );
 
 type ContentProps = {
-  messages: Message[];
-  loading: boolean;
-  sendMessage: (text: string) => void;
-  deleteMessage: (id: string) => void;
   closePopover: () => void;
 };
 
-export const Content = ({
-  messages,
-  loading,
-  sendMessage,
-  deleteMessage,
-  closePopover,
-}: ContentProps) => {
+export const Content = ({ closePopover }: ContentProps) => {
   const chatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [messages, loading, sendMessage, deleteMessage] = useChatStore(
+    (state) => [state.messages, state.loading, state.send, state.delete]
+  );
 
   useEffect(() => {
     if (chatRef.current) {
@@ -75,7 +69,11 @@ export const Content = ({
         inputRef.current.value = "";
       }
     });
-  });
+
+    return () => {
+      document.removeEventListener("keydown", () => {});
+    };
+  }, [sendMessage, inputRef]);
 
   return (
     <PopoverContent
@@ -136,13 +134,6 @@ export const Content = ({
         <button
           type="submit"
           className="bg-transparent border-none shadow-none hover:bg-transparent group"
-          onKeyDown={(e) => {
-            console.log("🚀 ~ e:", e);
-            if (e.key === "Enter" && inputRef.current) {
-              sendMessage(inputRef.current.value ?? "");
-              inputRef.current.value = "";
-            }
-          }}
           onClick={(e) => {
             e.preventDefault();
 

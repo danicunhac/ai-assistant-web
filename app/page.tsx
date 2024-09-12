@@ -8,13 +8,7 @@ import { Popover } from "@/components/ui/popover";
 import { Content, Trigger } from "@/components/Popover";
 
 export default function Home() {
-  const [messages, loading, get, send, del] = useChatStore((state) => [
-    state.messages,
-    state.loading,
-    state.get,
-    state.send,
-    state.delete,
-  ]);
+  const [get] = useChatStore((state) => [state.get]);
 
   const [popoverOpen, togglePopover] = useState(false);
 
@@ -33,13 +27,7 @@ export default function Home() {
       <footer className="row-start-3 w-full flex gap-6 flex-wrap items-center justify-end">
         <Popover open={popoverOpen}>
           <Trigger togglePopover={() => togglePopover((prev) => !prev)} />
-          <Content
-            messages={messages}
-            loading={loading}
-            sendMessage={send}
-            deleteMessage={del}
-            closePopover={() => togglePopover((prev) => !prev)}
-          />
+          <Content closePopover={() => togglePopover((prev) => !prev)} />
         </Popover>
       </footer>
     </div>

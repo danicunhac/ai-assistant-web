@@ -1,4 +1,9 @@
-import { deleteMessage, getMessages, sendMessage } from "@/api/chat";
+import {
+  deleteMessage,
+  getMessages,
+  sendMessage,
+  updateMessage,
+} from "@/api/chat";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -18,7 +23,7 @@ type ChatActions = {
   get: () => Promise<void>;
   send: (text: string) => Promise<void>;
   delete: (id: string) => Promise<void>;
-  //   update: (id: string, text: string) => Promise<void>;
+  update: (id: string, text: string) => Promise<void>;
 };
 
 export const useChatStore = create<Chat & ChatActions>()(
@@ -54,7 +59,15 @@ export const useChatStore = create<Chat & ChatActions>()(
 
         set({ messages, loading: false });
       },
-      //   update: async (id?: string, text?: string) => {},
+      update: async (id?: string, text?: string) => {
+        if (!id || !text) return;
+
+        set({ loading: true });
+
+        const messages = await updateMessage(id, text);
+
+        set({ messages, loading: false });
+      },
     }),
     {
       name: "chatStore",
