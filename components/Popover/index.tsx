@@ -112,6 +112,7 @@ export const Content = ({ closePopover }: ContentProps) => {
           <DropdownMenu key={message.id}>
             {message.sender === "user" ? (
               <UserMessage
+                id={message.id}
                 text={message.text}
                 edited={message.edited}
                 onDelete={() => deleteMessage(message.id)}

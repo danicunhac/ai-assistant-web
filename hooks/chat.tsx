@@ -28,7 +28,7 @@ type ChatActions = {
 
 export const useChatStore = create<Chat & ChatActions>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       messages: [] as Message[],
       loading: false,
       get: async () => {
@@ -63,6 +63,13 @@ export const useChatStore = create<Chat & ChatActions>()(
         if (!id || !text) return;
 
         set({ loading: true });
+
+        const prevText = get().messages.find((m) => m.id === id)?.text;
+
+        if (prevText === text) {
+          set({ loading: false });
+          return;
+        }
 
         const messages = await updateMessage(id, text);
 
