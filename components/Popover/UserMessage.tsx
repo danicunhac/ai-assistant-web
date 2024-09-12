@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useChatStore } from "@/hooks/chat";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type UserMessageProps = {
   id: string;
@@ -36,13 +36,13 @@ export const UserMessage = ({
     }
   };
 
-  const submitEdit = () => {
+  const submitEdit = useCallback(() => {
     if (inputRef.current) {
       updateMessage(id, inputRef.current.value ?? "");
       setEditing(false);
       inputRef.current.value = "";
     }
-  };
+  }, [id, updateMessage]);
 
   useEffect(() => {
     if (editing) {
@@ -75,7 +75,7 @@ export const UserMessage = ({
     return () => {
       document.removeEventListener("keydown", () => {});
     };
-  }, [editing]);
+  }, [editing, dropdownOpen, submitEdit]);
 
   return (
     <DropdownMenu open={dropdownOpen}>
