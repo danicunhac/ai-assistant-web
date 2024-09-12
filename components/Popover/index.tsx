@@ -90,7 +90,7 @@ export const Content = ({ closePopover }: ContentProps) => {
         >
           <XIcon size={16} />
         </button>
-        <div className="flex flex-col items-center text-sm gap-2">
+        <div className="flex flex-col items-center text-sm gap-2 py-1">
           <Image
             src={AvaPic}
             alt="Ava Picture"
@@ -104,6 +104,7 @@ export const Content = ({ closePopover }: ContentProps) => {
           </p>
         </div>
       </header>
+      <Separator />
       <div
         ref={chatRef}
         className="flex flex-col gap-4 p-4 overflow-y-scroll h-[372px] max-h-[372px]"
