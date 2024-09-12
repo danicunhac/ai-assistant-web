@@ -1,6 +1,6 @@
 import { Message } from "@/hooks/chat";
 
-const API_URL = "https://ai-assistant-server-omega.vercel.app";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getMessages = async (): Promise<Message[]> =>
   await fetch(`${API_URL}/`, {
