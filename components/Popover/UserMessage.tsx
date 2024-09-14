@@ -47,7 +47,6 @@ export const UserMessage = ({
   useEffect(() => {
     if (editing) {
       toggleDropdown(false);
-      inputRef.current?.focus();
     }
   }, [editing]);
 
@@ -65,10 +64,6 @@ export const UserMessage = ({
         if (dropdownOpen) {
           toggleDropdown((prev) => !prev);
         }
-      }
-
-      if (e.key === " " && editing && inputRef.current) {
-        inputRef.current.value += " ";
       }
     });
 
